@@ -1,4 +1,4 @@
-package com.maullu.the_thinker;
+package com.maullu.the_thinker.Controllers;
 
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;

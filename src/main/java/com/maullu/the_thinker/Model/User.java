@@ -1,4 +1,4 @@
-package com.maullu.the_thinker;
+package com.maullu.the_thinker.Model;
 
 import org.springframework.data.annotation.Id;
 
