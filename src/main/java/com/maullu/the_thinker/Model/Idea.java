@@ -1,6 +1,41 @@
 package com.maullu.the_thinker.Model;
 
-import org.springframework.data.annotation.Id;
+import jakarta.persistence.*;
 
-public record Idea(@Id Long id, String title, String description, Visibility visibility) {
+@Entity
+public class Idea {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    private String title;
+
+    private String description;
+
+    @Enumerated(EnumType.STRING)
+    private Visibility visibility;
+
+    public Idea() {}
+
+    public Idea(Long id, String title, String description, Visibility visibility) {
+        this.id = id;
+        this.title = title;
+        this.description = description;
+        this.visibility = visibility;
+    }
+
+    // Getters y setters
+
+    public Long getId() { return id; }
+    public void setId(Long id) { this.id = id; }
+
+    public String getTitle() { return title; }
+    public void setTitle(String title) { this.title = title; }
+
+    public String getDescription() { return description; }
+    public void setDescription(String description) { this.description = description; }
+
+    public Visibility getVisibility() { return visibility; }
+    public void setVisibility(Visibility visibility) { this.visibility = visibility; }
 }
