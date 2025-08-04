@@ -1,7 +1,11 @@
 package com.maullu.the_thinker;
 
 import com.maullu.the_thinker.Model.Idea;
-import org.springframework.data.repository.ListCrudRepository;
+import com.maullu.the_thinker.Model.Visibility;
+import org.springframework.data.repository.CrudRepository;
 
-public interface IdeasRepository extends ListCrudRepository<Idea, Long> {
+import java.util.List;
+
+public interface IdeasRepository extends CrudRepository<Idea, Long> {
+    List<Idea> findByVisibility(Visibility visibility);
 }
