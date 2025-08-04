@@ -1,7 +1,10 @@
 package com.maullu.the_thinker;
 
+import com.jayway.jsonpath.DocumentContext;
+import com.jayway.jsonpath.JsonPath;
 import com.maullu.the_thinker.Model.Idea;
 import com.maullu.the_thinker.Model.Visibility;
+import net.minidev.json.JSONArray;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,9 +12,14 @@ import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabas
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.boot.testcontainers.service.connection.ServiceConnection;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.testcontainers.containers.PostgreSQLContainer;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
+
+import java.util.List;
+
 import static org.assertj.core.api.Assertions.assertThat;
 
 @Testcontainers
@@ -40,13 +48,26 @@ class TheThinkerApplicationTests {
 		Idea idea2 = new Idea(null, "SecondIdea", "SecondDes", Visibility.PRIVATE);
 		ideasRepository.save(idea1);
 		ideasRepository.save(idea2);
-		System.out.println("TODOSSS: " + ideasRepository.findAll());
 	}
 
 	@Test
-	void shouldFindByVisibility(){
+	void shouldFindTheFirstByVisibility(){
 		assertThat(ideasRepository.findByVisibility(Visibility.PUBLIC).getFirst().getTitle()).isEqualTo("FirstIdea");
 	}
+
+	@Test
+	void shouldFindAllTheIdeasWhenIsRequested(){
+		ResponseEntity<String> response = restTemplate
+				.getForEntity("/ideas?page=0&size=2", String.class);
+		assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+
+		DocumentContext documentContext = JsonPath.parse(response.getBody());
+		JSONArray ideasFound = documentContext.read("$[*]");
+		assertThat(ideasFound.size()).isEqualTo(2);
+
+	}
+
+
 
 
 }
