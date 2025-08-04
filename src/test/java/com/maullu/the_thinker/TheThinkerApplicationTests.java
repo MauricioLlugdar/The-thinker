@@ -12,14 +12,13 @@ import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabas
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.boot.testcontainers.service.connection.ServiceConnection;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.testcontainers.containers.PostgreSQLContainer;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
-
-import java.util.List;
-
+import org.springframework.data.domain.Pageable;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @Testcontainers
@@ -52,7 +51,8 @@ class TheThinkerApplicationTests {
 
 	@Test
 	void shouldFindTheFirstByVisibility(){
-		assertThat(ideasRepository.findByVisibility(Visibility.PUBLIC).getFirst().getTitle()).isEqualTo("FirstIdea");
+		Pageable firstPage = PageRequest.of(0, 1);
+		assertThat(ideasRepository.findByVisibility(Visibility.PUBLIC, firstPage).getFirst().getTitle()).isEqualTo("FirstIdea");
 	}
 
 	@Test
