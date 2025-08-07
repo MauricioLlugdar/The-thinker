@@ -26,6 +26,9 @@ import static org.assertj.core.api.Assertions.assertThat;
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 class TheThinkerApplicationTests {
 
+	Idea idea1;
+	Idea idea2;
+
 	@Container
 	@ServiceConnection //It configures automatically the testDb
 	static PostgreSQLContainer<?> postgreSQL = new PostgreSQLContainer<>("postgres:17");
@@ -45,8 +48,8 @@ class TheThinkerApplicationTests {
 		ideasRepository.deleteAll();
 		Idea idea1 = new Idea(null, "FirstIdea", "FirstDes", Visibility.PUBLIC);
 		Idea idea2 = new Idea(null, "SecondIdea", "SecondDes", Visibility.PRIVATE);
-		ideasRepository.save(idea1);
-		ideasRepository.save(idea2);
+		this.idea1 = ideasRepository.save(idea1);
+		this.idea2 = ideasRepository.save(idea2);
 	}
 
 	@Test
@@ -64,7 +67,17 @@ class TheThinkerApplicationTests {
 		DocumentContext documentContext = JsonPath.parse(response.getBody());
 		JSONArray ideasFound = documentContext.read("$[*]");
 		assertThat(ideasFound.size()).isEqualTo(2);
+	}
 
+	@Test
+	void shouldReturnTheIdeaById(){
+		ResponseEntity<String> response = restTemplate
+				.getForEntity("/ideas/"+idea1.getId(), String.class);
+		assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+
+		DocumentContext documentContext = JsonPath.parse(response.getBody());
+		Number id = documentContext.read("$.id");
+		assertThat(id.longValue()).isEqualTo(idea1.getId());
 	}
 
 
