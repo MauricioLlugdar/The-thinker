@@ -1,3 +1,10 @@
+# The Thinker API
+
+The Thinker is a RESTful API built with Java Spring Boot and PostgreSQL that allows users to manage and share ideas. Each idea can be public, private or protected(only friends and you), and the API provides endpoints (CRUD and more) to create, read, update, delete and filter ideas by visibility.
+
+This project is designed as a backend service for applications that need to store and manage creative thoughts, brainstorming sessions, or knowledge sharing platforms.
+
+
 ## Getting Started
 
 ### Prerequisites
