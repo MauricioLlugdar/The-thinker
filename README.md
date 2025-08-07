@@ -91,5 +91,5 @@ This project is open source and available under the [MIT License](LICENSE).
 
 ## Author
 
-**Mauricio Llugdar** – _Academic Project_  
+**Mauricio J. Llugdar** 
 [GitHub](https://github.com/MauricioLlugdar) • [LinkedIn](https://www.linkedin.com/in/mauricio-jeremias-llugdar-8bbab41b6/)
