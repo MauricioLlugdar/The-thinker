@@ -97,6 +97,11 @@ class TheThinkerApplicationTests {
 				.getForEntity(locationOfTheNewIdea, String.class);
 		assertThat(findResponse.getStatusCode()).isEqualTo(HttpStatus.OK);
 
+		DocumentContext documentContext = JsonPath.parse(findResponse.getBody());
+		Number id = documentContext.read("$.id");
+		String title = documentContext.read("$.title");
+		assertThat(title).isEqualTo("IDEA");
+		assertThat(id.longValue()).isNotNull();
 	}
 
 
