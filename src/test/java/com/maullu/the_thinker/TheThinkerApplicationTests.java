@@ -15,10 +15,14 @@ import org.springframework.boot.testcontainers.service.connection.ServiceConnect
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.test.annotation.DirtiesContext;
 import org.testcontainers.containers.PostgreSQLContainer;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 import org.springframework.data.domain.Pageable;
+
+import java.net.URI;
+
 import static org.assertj.core.api.Assertions.assertThat;
 
 @Testcontainers
@@ -81,11 +85,18 @@ class TheThinkerApplicationTests {
 	}
 
 	@Test
+	@DirtiesContext
 	void shouldCreateNewIdea(){
 		Idea newIdea = new Idea(null, "IDEA", "FIRST IDEA EVER CREATED", Visibility.PROTECTED);
-		ResponseEntity<Void> response = restTemplate
+		ResponseEntity<Void> createResponse = restTemplate
 				.postForEntity("/ideas", newIdea, Void.class);
-		assertThat(response.getStatusCode()).isEqualTo(HttpStatus.CREATED);
+		assertThat(createResponse.getStatusCode()).isEqualTo(HttpStatus.CREATED);
+
+		URI locationOfTheNewIdea = createResponse.getHeaders().getLocation();
+		ResponseEntity<String> findResponse = restTemplate
+				.getForEntity(locationOfTheNewIdea, String.class);
+		assertThat(findResponse.getStatusCode()).isEqualTo(HttpStatus.OK);
+
 	}
 
 
