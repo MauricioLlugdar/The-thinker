@@ -80,6 +80,14 @@ class TheThinkerApplicationTests {
 		assertThat(id.longValue()).isEqualTo(idea1.getId());
 	}
 
+	@Test
+	void shouldCreateNewIdea(){
+		Idea newIdea = new Idea(null, "IDEA", "FIRST IDEA EVER CREATED", Visibility.PROTECTED);
+		ResponseEntity<Void> response = restTemplate
+				.postForEntity("/ideas", newIdea, Void.class);
+		assertThat(response.getStatusCode()).isEqualTo(HttpStatus.CREATED);
+	}
+
 
 
 
