@@ -78,4 +78,10 @@ public class IdeasController {
 
         return ResponseEntity.noContent().build();
     }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteById(@PathVariable Long id){
+        ideasRepository.deleteById(id);
+        return ResponseEntity.noContent().build();
+    }
 }
