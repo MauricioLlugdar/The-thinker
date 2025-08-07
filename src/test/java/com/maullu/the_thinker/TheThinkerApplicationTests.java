@@ -53,10 +53,8 @@ class TheThinkerApplicationTests {
 	}
 
 	ResponseEntity<String> findById(Long id){
-		ResponseEntity<String> response = restTemplate
+		return restTemplate
 				.getForEntity("/ideas/"+id, String.class);
-		assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
-		return response;
 	}
 
 	@BeforeEach
@@ -88,7 +86,7 @@ class TheThinkerApplicationTests {
 	@Test
 	void shouldReturnTheIdeaById(){
 		ResponseEntity<String> response = findById(idea1.getId());
-
+		assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
 		DocumentContext documentContext = JsonPath.parse(response.getBody());
 		Number id = documentContext.read("$.id");
 		assertThat(id.longValue()).isEqualTo(idea1.getId());
@@ -126,12 +124,23 @@ class TheThinkerApplicationTests {
 		assertThat(updateResponse.getStatusCode()).isEqualTo(HttpStatus.NO_CONTENT);
 
 		ResponseEntity<String> findUpdatedResponse = findById(idea1.getId());
+		assertThat(findUpdatedResponse.getStatusCode()).isEqualTo(HttpStatus.OK);
+
 		DocumentContext documentContext = JsonPath.parse(findUpdatedResponse.getBody());
 		String title = documentContext.read("$.title");
 		assertThat(title).isEqualTo(updatedTitle);
 	}
 
+	@Test
+	@DirtiesContext
+	void shouldDeleteAnIdea(){
+		ResponseEntity<Void> deleteResponse = restTemplate
+				.exchange("/ideas/" + idea1.getId(), HttpMethod.DELETE, null, Void.class);
+		assertThat(deleteResponse.getStatusCode()).isEqualTo(HttpStatus.NO_CONTENT);
 
+		ResponseEntity<String> findDeletedIdea = findById(idea1.getId());
+		assertThat(findDeletedIdea.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
+	}
 
 
 }
