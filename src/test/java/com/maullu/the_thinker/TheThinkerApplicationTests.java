@@ -13,6 +13,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.boot.testcontainers.service.connection.ServiceConnection;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.annotation.DirtiesContext;
@@ -22,6 +24,8 @@ import org.testcontainers.junit.jupiter.Testcontainers;
 import org.springframework.data.domain.Pageable;
 
 import java.net.URI;
+import java.util.HashMap;
+import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -102,6 +106,18 @@ class TheThinkerApplicationTests {
 		String title = documentContext.read("$.title");
 		assertThat(title).isEqualTo("IDEA");
 		assertThat(id.longValue()).isNotNull();
+	}
+
+	@Test
+	@DirtiesContext
+	void shouldUpdateAnIdea(){
+		Map<String, Object> updates = new HashMap<>();
+		updates.put("title", "Updated Title");
+		HttpEntity<Map<String, Object>> request = new HttpEntity<>(updates);
+		ResponseEntity<Void> response = restTemplate
+				.exchange("/ideas/"+idea1.getId(), HttpMethod.PATCH, request, Void.class);
+		assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NO_CONTENT);
+
 	}
 
 
