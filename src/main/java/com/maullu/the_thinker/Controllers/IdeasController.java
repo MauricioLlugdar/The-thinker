@@ -2,6 +2,7 @@ package com.maullu.the_thinker.Controllers;
 
 import com.maullu.the_thinker.IdeasRepository;
 import com.maullu.the_thinker.Model.Idea;
+import com.maullu.the_thinker.Model.Visibility;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -11,6 +12,7 @@ import org.springframework.web.util.UriComponentsBuilder;
 
 import java.net.URI;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 
@@ -53,5 +55,27 @@ public class IdeasController {
                 .buildAndExpand(savedIdea.getId())
                 .toUri();
         return ResponseEntity.created(locationOfTheNewIdea).build();
+    }
+
+    @PatchMapping("/{id}")
+    public ResponseEntity<Void> patchIdea(@PathVariable Long id, @RequestBody Map<String, Object> updates){
+        Optional<Idea> optionalIdea = ideasRepository.findById(id);
+        if (optionalIdea.isEmpty()) {
+            return ResponseEntity.notFound().build();
+        }
+        Idea updatedIdea = optionalIdea.get();
+        if (updates.containsKey("title")) {
+            updatedIdea.setTitle((String) updates.get("title"));
+        }
+        if (updates.containsKey("description")) {
+            updatedIdea.setDescription((String) updates.get("description"));
+        }
+        if (updates.containsKey("visibility")) {
+            updatedIdea.setVisibility(Visibility.valueOf((String) updates.get("visibility")));
+        }
+
+        ideasRepository.save(updatedIdea);
+
+        return ResponseEntity.noContent().build();
     }
 }
