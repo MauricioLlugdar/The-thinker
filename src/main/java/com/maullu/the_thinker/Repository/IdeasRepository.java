@@ -1,4 +1,4 @@
-package com.maullu.the_thinker;
+package com.maullu.the_thinker.Repository;
 
 import com.maullu.the_thinker.Model.Idea;
 import com.maullu.the_thinker.Model.Visibility;

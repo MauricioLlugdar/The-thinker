@@ -27,7 +27,7 @@ import java.net.URI;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
-
+import com.maullu.the_thinker.Repository.IdeasRepository;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @Testcontainers
