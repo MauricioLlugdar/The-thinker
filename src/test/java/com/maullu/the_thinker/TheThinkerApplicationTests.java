@@ -26,6 +26,7 @@ import org.springframework.data.domain.Pageable;
 import java.net.URI;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -49,6 +50,13 @@ class TheThinkerApplicationTests {
 
 	@Test
 	void contextLoads() {
+	}
+
+	ResponseEntity<String> findById(Long id){
+		ResponseEntity<String> response = restTemplate
+				.getForEntity("/ideas/"+id, String.class);
+		assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+		return response;
 	}
 
 	@BeforeEach
@@ -79,9 +87,7 @@ class TheThinkerApplicationTests {
 
 	@Test
 	void shouldReturnTheIdeaById(){
-		ResponseEntity<String> response = restTemplate
-				.getForEntity("/ideas/"+idea1.getId(), String.class);
-		assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+		ResponseEntity<String> response = findById(idea1.getId());
 
 		DocumentContext documentContext = JsonPath.parse(response.getBody());
 		Number id = documentContext.read("$.id");
@@ -112,12 +118,17 @@ class TheThinkerApplicationTests {
 	@DirtiesContext
 	void shouldUpdateAnIdea(){
 		Map<String, Object> updates = new HashMap<>();
-		updates.put("title", "Updated Title");
+		String updatedTitle = "Updated Title";
+		updates.put("title", updatedTitle);
 		HttpEntity<Map<String, Object>> request = new HttpEntity<>(updates);
-		ResponseEntity<Void> response = restTemplate
+		ResponseEntity<Void> updateResponse = restTemplate
 				.exchange("/ideas/"+idea1.getId(), HttpMethod.PATCH, request, Void.class);
-		assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NO_CONTENT);
+		assertThat(updateResponse.getStatusCode()).isEqualTo(HttpStatus.NO_CONTENT);
 
+		ResponseEntity<String> findUpdatedResponse = findById(idea1.getId());
+		DocumentContext documentContext = JsonPath.parse(findUpdatedResponse.getBody());
+		String title = documentContext.read("$.title");
+		assertThat(title).isEqualTo(updatedTitle);
 	}
 
 
