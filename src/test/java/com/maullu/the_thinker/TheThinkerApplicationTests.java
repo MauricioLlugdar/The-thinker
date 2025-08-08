@@ -37,6 +37,7 @@ class TheThinkerApplicationTests {
 
 	Idea idea1;
 	Idea idea2;
+	Idea idea3;
 
 	@Container
 	@ServiceConnection //It configures automatically the testDb
@@ -62,8 +63,10 @@ class TheThinkerApplicationTests {
 		ideasRepository.deleteAll();
 		Idea idea1 = new Idea(null, "FirstIdea", "FirstDes", Visibility.PUBLIC);
 		Idea idea2 = new Idea(null, "SecondIdea", "SecondDes", Visibility.PRIVATE);
+		Idea idea3 = new Idea(null, "ThirdIdea", "ThirdDes", Visibility.PUBLIC);
 		this.idea1 = ideasRepository.save(idea1);
 		this.idea2 = ideasRepository.save(idea2);
+		this.idea3 = ideasRepository.save(idea3);
 	}
 
 	@Test
