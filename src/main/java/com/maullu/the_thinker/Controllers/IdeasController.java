@@ -1,6 +1,6 @@
 package com.maullu.the_thinker.Controllers;
 
-import com.maullu.the_thinker.IdeasRepository;
+import com.maullu.the_thinker.Repository.IdeasRepository;
 import com.maullu.the_thinker.Model.Idea;
 import com.maullu.the_thinker.Model.Visibility;
 import org.springframework.data.domain.Page;
