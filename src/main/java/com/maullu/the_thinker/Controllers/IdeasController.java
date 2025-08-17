@@ -47,6 +47,19 @@ public class IdeasController {
         return ResponseEntity.notFound().build();
     }
 
+    @GetMapping("visibility/{visibility}")
+    public ResponseEntity<List<Idea>> findByVisibility(@PathVariable Visibility visibility, Pageable pageable){
+        List<Idea> ideas = ideasRepository.findByVisibility(
+                visibility,
+                PageRequest.of(
+                        pageable.getPageNumber(),
+                        pageable.getPageSize(),
+                        pageable.getSort()
+                )
+        );
+        return ResponseEntity.ok(ideas);
+    }
+
     @PostMapping
     public ResponseEntity<Void> createIdea(@RequestBody Idea newIdea, UriComponentsBuilder ucb){
         Idea savedIdea = ideasRepository.save(newIdea);
