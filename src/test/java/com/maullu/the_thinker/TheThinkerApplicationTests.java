@@ -12,7 +12,7 @@ import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabas
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.boot.testcontainers.service.connection.ServiceConnection;
-import org.springframework.data.domain.PageRequest;
+
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
@@ -21,12 +21,13 @@ import org.springframework.test.annotation.DirtiesContext;
 import org.testcontainers.containers.PostgreSQLContainer;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
-import org.springframework.data.domain.Pageable;
+
 
 import java.net.URI;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
-import java.util.Optional;
+
 import com.maullu.the_thinker.Repository.IdeasRepository;
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -70,9 +71,16 @@ class TheThinkerApplicationTests {
 	}
 
 	@Test
-	void shouldFindTheFirstByVisibility(){
-		Pageable firstPage = PageRequest.of(0, 1);
-		assertThat(ideasRepository.findByVisibility(Visibility.PUBLIC, firstPage).getFirst().getTitle()).isEqualTo("FirstIdea");
+	void shouldFindByVisibility(){
+		ResponseEntity<String> response = restTemplate
+				.getForEntity("/ideas/visibility/"+ Visibility.PUBLIC +"?page=0&size=10", String.class);
+		assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+
+		DocumentContext documentContext = JsonPath.parse(response.getBody());
+		JSONArray ideasFound = documentContext.read("$[*]");
+		assertThat(ideasFound.size()).isEqualTo(2);
+		List<String> visibilities = documentContext.read("[*].visibility");
+		visibilities.forEach( visibility -> assertThat(visibility).isEqualTo(Visibility.PUBLIC.toString()));
 	}
 
 	@Test
