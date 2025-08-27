@@ -16,13 +16,16 @@ public class Idea {
     @Enumerated(EnumType.STRING)
     private Visibility visibility;
 
+    private Long ownerId;
+
     public Idea() {}
 
-    public Idea(Long id, String title, String description, Visibility visibility) {
+    public Idea(Long id, String title, String description, Visibility visibility, Long ownerId) {
         this.id = id;
         this.title = title;
         this.description = description;
         this.visibility = visibility;
+        this.ownerId = ownerId;
     }
 
     // Getters y setters
@@ -38,4 +41,7 @@ public class Idea {
 
     public Visibility getVisibility() { return visibility; }
     public void setVisibility(Visibility visibility) { this.visibility = visibility; }
+
+    public Long getOwnerId() { return ownerId; }
+    public void setOwnerId(Long ownerId) { this.ownerId = ownerId; }
 }
