@@ -94,7 +94,10 @@ public class IdeasController {
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteById(@PathVariable Long id){
-        ideasRepository.deleteById(id);
-        return ResponseEntity.noContent().build();
+        if(ideasRepository.existsById(id)){
+            ideasRepository.deleteById(id);
+            return ResponseEntity.noContent().build();
+        }
+        return ResponseEntity.notFound().build();
     }
 }
