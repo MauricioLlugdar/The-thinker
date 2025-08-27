@@ -3,7 +3,10 @@ package com.maullu.the_thinker;
 import com.jayway.jsonpath.DocumentContext;
 import com.jayway.jsonpath.JsonPath;
 import com.maullu.the_thinker.Model.Idea;
+import com.maullu.the_thinker.Model.Role;
+import com.maullu.the_thinker.Model.User;
 import com.maullu.the_thinker.Model.Visibility;
+import com.maullu.the_thinker.Repository.UserRepository;
 import net.minidev.json.JSONArray;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -39,6 +42,7 @@ class TheThinkerApplicationTests {
 	Idea idea1;
 	Idea idea2;
 	Idea idea3;
+	User user;
 
 	@Container
 	@ServiceConnection //It configures automatically the testDb
@@ -49,6 +53,9 @@ class TheThinkerApplicationTests {
 
 	@Autowired
 	IdeasRepository ideasRepository;
+
+	@Autowired
+	UserRepository userRepository;
 
 	@Test
 	void contextLoads() {
@@ -62,9 +69,14 @@ class TheThinkerApplicationTests {
 	@BeforeEach
 	void setup(){
 		ideasRepository.deleteAll();
-		Idea idea1 = new Idea(null, "FirstIdea", "FirstDes", Visibility.PUBLIC);
-		Idea idea2 = new Idea(null, "SecondIdea", "SecondDes", Visibility.PRIVATE);
-		Idea idea3 = new Idea(null, "ThirdIdea", "ThirdDes", Visibility.PUBLIC);
+		userRepository.deleteAll();
+
+		User user = new User(null, "Carlos", "cgimenez@gmail.com", "123", Role.USER);
+		this.user = userRepository.save(user);
+
+		Idea idea1 = new Idea(null, "FirstIdea", "FirstDes", Visibility.PUBLIC, this.user.getId());
+		Idea idea2 = new Idea(null, "SecondIdea", "SecondDes", Visibility.PRIVATE, this.user.getId());
+		Idea idea3 = new Idea(null, "ThirdIdea", "ThirdDes", Visibility.PUBLIC, this.user.getId());
 		this.idea1 = ideasRepository.save(idea1);
 		this.idea2 = ideasRepository.save(idea2);
 		this.idea3 = ideasRepository.save(idea3);
@@ -106,7 +118,7 @@ class TheThinkerApplicationTests {
 	@Test
 	@DirtiesContext
 	void shouldCreateNewIdea(){
-		Idea newIdea = new Idea(null, "IDEA", "FIRST IDEA EVER CREATED", Visibility.PROTECTED);
+		Idea newIdea = new Idea(null, "IDEA", "FIRST IDEA EVER CREATED", Visibility.PROTECTED, this.user.getId());
 		ResponseEntity<Void> createResponse = restTemplate
 				.postForEntity("/ideas", newIdea, Void.class);
 		assertThat(createResponse.getStatusCode()).isEqualTo(HttpStatus.CREATED);
