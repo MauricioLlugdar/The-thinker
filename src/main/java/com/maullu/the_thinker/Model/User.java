@@ -1,29 +1,40 @@
 package com.maullu.the_thinker.Model;
 
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
+import jakarta.validation.constraints.Email;
 
+@Entity
+@Table(name = "\"user\"")
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private Long userId;
 
     private String name;
 
+    @Email
     private String email;
 
     private String password;
 
-    private String role;
+    private Role role;
 
+    public User(){}
 
-    public Long getId() {
-        return id;
+    public User(Long userId, String name, String email, String password, Role role) {
+        this.userId = userId;
+        this.name = name;
+        this.email = email;
+        this.password = password;
+        this.role = role;
     }
 
-    public void setId(Long id) {
-        this.id = id;
+    public Long getId() {
+        return userId;
+    }
+
+    public void setId(Long userId) {
+        this.userId = userId;
     }
 
     public String getName() {
@@ -42,11 +53,11 @@ public class User {
         this.email = email;
     }
 
-    public String getRole() {
+    public Role getRole() {
         return role;
     }
 
-    public void setRole(String role) {
+    public void setRole(Role role) {
         this.role = role;
     }
 }
