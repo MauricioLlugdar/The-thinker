@@ -160,5 +160,11 @@ class TheThinkerApplicationTests {
 		assertThat(deleteResponse.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
 	}
 
+	@Test
+	void getNotExistingIdeaById(){
+		ResponseEntity<String> response = findById(10000L);
+		assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
+	}
+
 
 }
