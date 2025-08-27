@@ -153,5 +153,12 @@ class TheThinkerApplicationTests {
 		assertThat(findDeletedIdea.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
 	}
 
+	@Test
+	void deleteNotExistingIdea(){
+		ResponseEntity<Void> deleteResponse = restTemplate
+				.exchange("/ideas/10000", HttpMethod.DELETE, null, Void.class);
+		assertThat(deleteResponse.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
+	}
+
 
 }
