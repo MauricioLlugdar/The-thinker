@@ -10,6 +10,9 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+
+import java.net.URI;
+
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class UserIntegrationTests extends BaseIntegrationTest{
@@ -43,8 +46,18 @@ public class UserIntegrationTests extends BaseIntegrationTest{
     @Test
     void shouldCreateUser(){
         User user = new User(null, "Mauri", "mauriciojllugdar@gmail.com", "123", Role.USER);
-        ResponseEntity<Void> response = restTemplate
+        ResponseEntity<Void> createResponse = restTemplate
                 .postForEntity("/user", user, Void.class);
-        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.CREATED);
+        assertThat(createResponse.getStatusCode()).isEqualTo(HttpStatus.CREATED);
+
+        URI locationCreatedUser = createResponse.getHeaders().getLocation();
+        ResponseEntity<String> response = restTemplate
+                .getForEntity(locationCreatedUser, String.class);
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+
+        DocumentContext documentContext = JsonPath.parse(response.getBody());
+        System.out.println(documentContext);
+        String name = documentContext.read("$.name");
+        assertThat(name).isEqualTo(user.getName());
     }
 }
