@@ -39,4 +39,12 @@ public class UserIntegrationTests extends BaseIntegrationTest{
         DocumentContext documentContext = JsonPath.parse(response.getBody());
         assertThat(user1.getName()).isEqualTo(documentContext.read("$.name"));
     }
+
+    @Test
+    void shouldCreateUser(){
+        User user = new User(null, "Mauri", "mauriciojllugdar@gmail.com", "123", Role.USER);
+        ResponseEntity<Void> response = restTemplate
+                .postForEntity("/user", user, Void.class);
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.CREATED);
+    }
 }
